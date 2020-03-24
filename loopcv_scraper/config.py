@@ -14,8 +14,8 @@ TELNET_DELAY_TIME = 5
 FILL_BOX_DELAY_TIME = 4
 
 CREDENTIALS = {
-    "email": "fotis.kal21@gmail.com",
-    "password": "javaman698"
+    "email": "yyyyy@gmail.com",
+    "password": "xxxxx"
 }
 
 MAIL_FORMATS = [
