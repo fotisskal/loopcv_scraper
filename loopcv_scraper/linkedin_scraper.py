@@ -9,6 +9,7 @@ from time import sleep
 import pymongo
 from pymongo.errors import DuplicateKeyError
 from selenium import webdriver
+from chromedriver_py import binary_path
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -16,16 +17,17 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from tldextract import tldextract
 
-from config import *
+from loopcv_scraper.config import *
 
 
 class LinkedinScraper:
     def __init__(self):
-        os.chmod(DRIVER_PATH, 0o777)
-        sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+        # os.chmod(DRIVER_PATH, 0o777)
+        # sys.path.append(os.path.dirname(os.path.realpath(__file__)))
         chrome_options = Options()
+        chrome_options.add_argument('--no-sandbox')
         chrome_options.headless = True
-        self.driver = webdriver.Chrome(DRIVER_PATH, options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path=binary_path, options=chrome_options)
         self.total_employees_history = []
         self.employees_sum = 0
         self.company_url = ""

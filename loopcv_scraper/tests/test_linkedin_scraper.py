@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from linkedin_scraper import LinkedinScraper
+from loopcv_scraper.linkedin_scraper import LinkedinScraper
 
 
 class TestLinkedinScraper(TestCase):
