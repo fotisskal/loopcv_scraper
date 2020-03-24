@@ -1,5 +1,7 @@
 FROM python:3-buster
 
+WORKDIR /usr/src/app
+
 COPY src/requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
@@ -13,7 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
     sudo chown root:root /usr/local/bin/chromedriver
     sudo chmod 0755 /usr/local/bin/chromedriver
 
-COPY LanguageDetection .
-COPY Translation .
+COPY loopcv_scraper .
 
 EXPOSE 8000
