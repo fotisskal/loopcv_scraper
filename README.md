@@ -1,26 +1,28 @@
 # Introduction
-Scraping tool
+Scraping tool for Linkedin with the ultimate purpose to filter out recruiters and find their e-mails
+based on the company name and a location.
 
 ## PREREQUISITES:
 
 Be sure to have Python v3 installed.
 
 1. Install Selenium
-  - pip3 install selenium
+    - pip3 install selenium
 
 2. Install tldextract
-  - pip3 install tldextract
+    - pip3 install tldextract
 
 3. Install and initiate Mongo DB 4.2
-  - pip3 install pymongo
-  - brew update
-  - brew tap mongodb/brew
-  - brew install mongodb-community@4.2
-  - brew services start mongodb/brew/mongodb-community
+    - pip3 install pymongo
+    - brew update
+    - brew tap mongodb/brew
+    - brew install mongodb-community@4.2
+    - brew services start mongodb/brew/mongodb-community
 
 4. Install chromedriver and be sure the binary is in /usr/local/bin path
-  - brew cask install chromedriver
-  - mv chromedriver /usr/local/bin
+      - brew cask install chromedriver
+      - mv chromedriver /usr/local/bin <br />
+      (For Linux check requirements.txt)
 
 > Download options depend on operating system.
 
