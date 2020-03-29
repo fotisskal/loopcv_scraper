@@ -15,6 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
     sudo chown root:root /usr/local/bin/chromedriver
     sudo chmod 0755 /usr/local/bin/chromedriver
 
-COPY loopcv_scraper .
+COPY src/ .
 
 EXPOSE 8000
