@@ -1,3 +1,7 @@
 selenium
 tldextract
 chromedriver-binary==81.0.4044.69.0
+fastapi
+uvicorn
+pydantic
+bs4

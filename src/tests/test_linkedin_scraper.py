@@ -1,5 +1,6 @@
+import telnetlib
 from unittest import TestCase
-
+from time import sleep
 from src.Scraper.linkedin_scraper import LinkedinScraper
 
 
@@ -75,3 +76,26 @@ class TestI(TestLinkedinScraper):
         html_source = self.scraper.driver.page_source
         print(html_source)
 
+
+class TestJ(TestLinkedinScraper):
+    def test_new_login(self):
+        self.scraper.linkedin_login()
+        self.scraper.get_company_info_and_people('navarino-sa', 'Greece')
+        s = self.scraper.get_recruiters_from_company_people('navarino-sa', 'Greece')
+        print(s)
+
+
+class TestK(TestLinkedinScraper):
+    def test_telnet(self):
+        with telnetlib.Telnet("integrity.niometrics.com", 25, timeout=10) as session:
+            session.set_debuglevel(100)
+            sleep(3)
+            session.read_very_eager()
+
+
+class TestL(TestLinkedinScraper):
+    def test_telnet_B(self):
+        mail_dict = {
+            "kalaboka@ginbits.com": {}
+        }
+        self.scraper.find_valid_mail_format(mail_dict, "mail.ginbits.com", "ginbits.com")

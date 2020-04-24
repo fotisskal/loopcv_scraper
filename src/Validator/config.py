@@ -9,13 +9,13 @@ DRIVER_PATH = '/usr/local/bin/chromedriver'
 ELEMENT_LOAD_TIME = 6
 PAGE_LOAD_TIME = 5
 SCROLL_PAUSE_TIME = 4
-TELNET_RESPONSE_TIME = 4
+TELNET_RESPONSE_TIME = 6
 TELNET_DELAY_TIME = 5
 FILL_BOX_DELAY_TIME = 4
 
 CREDENTIALS = {
-    "email": "yyyyy@gmail.com",
-    "password": "xxxxx"
+    "email": "fotis.kal21@gmail.com",
+    "password": "javaman698"
 }
 
 MAIL_FORMATS = [
@@ -31,7 +31,7 @@ MAIL_FORMATS = [
     "%(last_name)s"
 ]
 
-XPATHS = {
+OLD_XPATHS = {
     "login_username": '//*[@id="username"]',
     "login_password": '//*[@id="password"]',
     "login_button": '//*[@id="app__container"]/main/div/form/div[3]/button',
@@ -46,14 +46,29 @@ XPATHS = {
     "contact_info": "/html/body/div[4]/div/div/div[2]/section/div/div[1]/div/section[2]/div/a"
 }
 
+IDS = {
+    'login_username': 'username',
+    'login_password': 'password'
+}
+
+SELECTORS = {
+    'login_button': '#app__container > main > div:nth-child(2) > form > div.login__form_action_container > button'
+}
+
 CLASSES = {
-    "company_people": "org-people-profiles-module__profile-list"
+    'company_url': 'org-top-card-primary-actions__action ember-view',
+    'employees_number': 't-20 t-black',
+    'employees_names': 'org-people-profile-card__profile-title t-black lt-line-clamp lt-line-clamp--single-line ember-view',
+    'employees_urls': 'link-without-visited-state ember-view',
+    'employees_positons': 'lt-line-clamp lt-line-clamp--multi-line ember-view'
 }
 
 # Rating [1, 5]
 RECRUITMENT_KEYWORDS = {
     "HR": 5,
     "hr": 5,
+    "Human": 5,
+    "human": 5,
     "Human Resources": 5,
     "human resources": 5,
     "Director": 3,

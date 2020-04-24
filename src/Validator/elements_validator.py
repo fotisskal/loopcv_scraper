@@ -1,15 +1,37 @@
 import os
 import sys
 
+from bs4 import BeautifulSoup
+from fastapi import FastAPI
+from pydantic import BaseModel
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.by import By
 
-from .config import DRIVER_PATH, LINKEDIN_LOGIN_URL, ELEMENT_LOAD_TIME, XPATHS, LINKEDIN_PEOPLE_LOCATION_FILTER_URL
+from src.Scraper.linkedin_scraper import get_url
+from .config import *
+
+app = FastAPI()
+
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Linkedin Scraper & Email Finder API"}
+
+
+class ValidatorParams(BaseModel):
+    company: str
+    location: str
+
+
+@app.post("/linkedin")
+async def linkedin_get_company_info_and_recruiter_mails(request: ValidatorParams):
+    try:
+        validator = SeleniumValidator()
+        validator.validate_elements(request.company, request.location)
+    except (TimeoutException, NoSuchElementException):
+        raise
 
 
 class SeleniumValidator:
@@ -18,66 +40,51 @@ class SeleniumValidator:
         sys.path.append(os.path.dirname(os.path.realpath(__file__)))
         chrome_options = Options()
         chrome_options.headless = True
+        self.employees_sum = 0
+        self.company_url = ""
+        self.mail_format = ""
         self.driver = webdriver.Chrome(DRIVER_PATH, options=chrome_options)
 
     def validate_elements(self, company_id, geo_location):
         try:
-            self.driver.get(LINKEDIN_LOGIN_URL)
+            self.driver.get(get_url(LINKEDIN_LOGIN_URL))
             self.validate_login_button()
-            self.validate_login_button_v2()
-            self.driver.get(LINKEDIN_PEOPLE_LOCATION_FILTER_URL % {'company': company_id, 'location': geo_location})
-            self.validate_company_url()
-            self.validate_company_url_v2()
-            self.validate_company_employees()
-            self.validate_company_employees_v2()
+            self.driver.get(
+                get_url(LINKEDIN_PEOPLE_LOCATION_FILTER_URL) % {'company': company_id, 'location': geo_location})
+            text = self.driver.page_source
+            to_crawl = BeautifulSoup(text, "lxml")
+            self.validate_company_url(to_crawl)
+            self.validate_company_employees(to_crawl)
+            self.validate_employees(to_crawl)
+            self.driver.close()
         except (TimeoutException, NoSuchElementException):
             raise
 
     def validate_login_button(self):
         try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['login_button'])))
+            self.driver.find_element_by_css_selector(SELECTORS['login_button']).click()
         except (TimeoutException, NoSuchElementException):
             raise
 
-    def validate_login_button_v2(self):
+    @staticmethod
+    def validate_company_url(to_crawl):
         try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['login_button_v2'])))
+            to_crawl.find('a', {'class': CLASSES['company_url']})['href'].strip()
         except (TimeoutException, NoSuchElementException):
             raise
 
-    def validate_company_url(self):
+    @staticmethod
+    def validate_company_employees(to_crawl):
         try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['company_url'])))
+            to_crawl.find('span', {'class': CLASSES['employees_number']}).text.strip()
         except (TimeoutException, NoSuchElementException):
             raise
 
-    def validate_company_url_v2(self):
+    @staticmethod
+    def validate_employees(to_crawl):
         try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['company_url_v2'])))
+            to_crawl.findAll('div', {'class': CLASSES['employees_names']})
+            to_crawl.findAll('a', {'class': CLASSES['employees_urls']})
+            to_crawl.findAll('div', {'class': CLASSES['employees_positons']})
         except (TimeoutException, NoSuchElementException):
             raise
-
-    def validate_company_employees(self):
-        try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['employees_number'])))
-        except (TimeoutException, NoSuchElementException):
-            raise
-
-    def validate_company_employees_v2(self):
-        try:
-            WebDriverWait(self.driver, ELEMENT_LOAD_TIME).until(
-                expected_conditions.visibility_of_element_located((By.XPATH, XPATHS['employees_number_v2'])))
-        except (TimeoutException, NoSuchElementException):
-            raise
-
-
-if __name__ == '__main__':
-    company = sys.argv[1]
-    location = sys.argv[2]
-    validator = SeleniumValidator()
-    validator.validate_elements(company, location)
