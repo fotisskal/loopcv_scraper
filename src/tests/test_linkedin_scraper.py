@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from loopcv_scraper.linkedin_scraper import LinkedinScraper
+from src.Scraper.linkedin_scraper import LinkedinScraper
 
 
 class TestLinkedinScraper(TestCase):
@@ -13,7 +13,6 @@ class TestA(TestLinkedinScraper):
     def test_get_mail_from_linkedin_profile(self):
         self.scraper.linkedin_login()
         mail = self.scraper.get_mail_from_linkedin_profile("https://www.linkedin.com/in/fotis-kalathopoulos-58719186")
-        print(mail)
         self.assertEqual(mail, 'fotis.kal21@gmail.com')
 
 

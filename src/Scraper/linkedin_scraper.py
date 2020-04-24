@@ -1,15 +1,12 @@
 import json
-import os
 import subprocess
 import sys
 import telnetlib
 from random import randint
 from time import sleep
 
-import pymongo
-from pymongo.errors import DuplicateKeyError
+import chromedriver_binary
 from selenium import webdriver
-from chromedriver_py import binary_path
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -17,17 +14,15 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from tldextract import tldextract
 
-from loopcv_scraper.config import *
+from .config import *
 
 
 class LinkedinScraper:
     def __init__(self):
-        # os.chmod(DRIVER_PATH, 0o777)
-        # sys.path.append(os.path.dirname(os.path.realpath(__file__)))
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.headless = True
-        self.driver = webdriver.Chrome(executable_path=binary_path, options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path=chromedriver_binary.chromedriver_filename, options=chrome_options)
         self.total_employees_history = []
         self.employees_sum = 0
         self.company_url = ""
@@ -107,7 +102,6 @@ class LinkedinScraper:
             "recruiters_number": recruiters_number
         }
         print(json.dumps(company_info, indent=2))
-        self.store_to_mongo_db("companies", company_info)
         return recruiters_list
 
     def get_company_url(self):
@@ -238,7 +232,7 @@ class LinkedinScraper:
 
     # Issue: may not be feasible if profile not connected with recruiter because of privacy settings
     def get_mail_from_linkedin_profile(self, profile_url):
-        contact_info_url = profile_url + "detail/contact-info/"
+        contact_info_url = profile_url + "/detail/contact-info/"
         self.driver.get(contact_info_url)
         mail = self.get_mail_if_present()
         return mail
@@ -269,17 +263,6 @@ class LinkedinScraper:
     def random_scroll_up(self, height):
         random_height = randint(0, height)
         self.driver.execute_script("window.scrollTo(%s, 0);" % random_height)
-
-    @staticmethod
-    def store_to_mongo_db(collection, data_info):
-        try:
-            mg_client = pymongo.MongoClient("mongodb://%(host)s:%(port)s/" % dict(host=MONGO_HOST, port=MONGO_PORT))
-            general_db = mg_client["loopCV"]
-            db_collection = general_db[collection]
-            db_collection.create_index("name", unique=True)
-            db_collection.insert_one(data_info)
-        except DuplicateKeyError:
-            return
 
     @staticmethod
     def extract_domain_from_url(url):

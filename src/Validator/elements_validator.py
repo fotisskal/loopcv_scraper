@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 
-from config import DRIVER_PATH, LINKEDIN_LOGIN_URL, ELEMENT_LOAD_TIME, XPATHS, LINKEDIN_PEOPLE_LOCATION_FILTER_URL
+from .config import DRIVER_PATH, LINKEDIN_LOGIN_URL, ELEMENT_LOAD_TIME, XPATHS, LINKEDIN_PEOPLE_LOCATION_FILTER_URL
 
 
 class SeleniumValidator:
