@@ -8,6 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo apt install ./google-chrome-stable_current_amd64.deb
 
-COPY src/ .
+COPY src/Scraper .
 
 EXPOSE 8000
+
+CMD ["uvicorn", "Scraper/linkedin_scraper:app", "--port", "8000", "--reload"]
